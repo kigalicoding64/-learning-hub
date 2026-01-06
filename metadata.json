@@ -1,0 +1,8 @@
+{
+  "name": "Egreed Technology - Learning Hub",
+  "description": "Learn modern web development with Egreed Technology's advanced AI platform featuring real-time tutoring, image/video analysis, and high-quality generation.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
