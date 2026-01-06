@@ -10,8 +10,13 @@ export interface Course {
   id: string;
   title: string;
   description: string;
-  price: number; // Price in USD. 0 for free.
+  price: number; 
   lessons: Lesson[];
+  level: 'Beginner' | 'Intermediate' | 'Advanced';
+  rating: number;
+  students: number;
+  category: string;
+  partner?: string;
 }
 
 export enum MessageSender {

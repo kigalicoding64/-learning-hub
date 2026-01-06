@@ -2,39 +2,62 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-g" />
+    <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Egreed Technology - Dynamic Online Class</title>
+    <title>Egreed Technology - AI-Native Learning Ecosystem</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              'brand-dark': '#111827', // gray-900
-              'brand-light-blue': '#34d399', // emerald-400
-              'brand-blue': '#10b981', // emerald-500
-              'brand-secondary': '#1f2937', // gray-800
+              'brand-dark': '#0f172a',
+              'brand-darker': '#020617',
+              'brand-light-blue': '#34d399',
+              'brand-blue': '#10b981',
+              'brand-secondary': '#1e293b',
             },
             animation: {
-              'fade-in': 'fadeIn 0.5s ease-in-out',
-              'slide-in-up': 'slideInUp 0.5s ease-in-out',
+              'fade-in': 'fadeIn 0.5s ease-out forwards',
+              'slide-up': 'slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+              'blob': 'blob 7s infinite',
+              'float': 'float 6s ease-in-out infinite',
             },
             keyframes: {
               fadeIn: {
                 '0%': { opacity: '0' },
                 '100%': { opacity: '1' },
               },
-              slideInUp: {
-                '0%': { transform: 'translateY(20px)', opacity: '0' },
+              slideUp: {
+                '0%': { transform: 'translateY(30px)', opacity: '0' },
                 '100%': { transform: 'translateY(0)', opacity: '1' },
+              },
+              blob: {
+                '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                '100%': { transform: 'translate(0px, 0px) scale(1)' },
+              },
+              float: {
+                '0%, 100%': { transform: 'translateY(0)' },
+                '50%': { transform: 'translateY(-20px)' },
               }
             }
           }
         }
       }
     </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap');
+      body { font-family: 'Inter', sans-serif; }
+      .bg-grid {
+        background-image: radial-gradient(circle at 1px 1px, #1e293b 1px, transparent 0);
+        background-size: 40px 40px;
+      }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
   <script type="importmap">
 {
   "imports": {
@@ -46,7 +69,7 @@
 }
 </script>
 </head>
-  <body class="bg-brand-dark text-slate-200">
+  <body class="bg-brand-dark text-slate-200 antialiased overflow-x-hidden">
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>
   </body>

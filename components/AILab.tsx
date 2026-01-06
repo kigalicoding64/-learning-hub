@@ -36,9 +36,15 @@ const AILab: React.FC<AILabProps> = ({ onClose }) => {
         setAnalysisResult('');
         try {
             if (tool === 'image') {
+                // Guideline: MUST select their own API key before using gemini-3-pro-image-preview
+                const hasSelected = await (window as any).aistudio.hasSelectedApiKey();
+                if (!hasSelected) {
+                    await (window as any).aistudio.openSelectKey();
+                }
                 const url = await generateAIImage(prompt, aspectRatio);
                 setResultUrl(url);
             } else if (tool === 'video') {
+                // Guideline: MUST select their own API key for Veo models
                 const hasSelected = await (window as any).aistudio.hasSelectedApiKey();
                 if (!hasSelected) {
                     await (window as any).aistudio.openSelectKey();
@@ -51,11 +57,18 @@ const AILab: React.FC<AILabProps> = ({ onClose }) => {
                 setAnalysisResult(res);
             } else if (tool === 'audio') {
                 const url = await generateTTS(prompt);
+                // Note: The audio returned by SDK is raw PCM; browser Audio tag might require additional processing for some formats
                 setResultUrl(`data:audio/wav;base64,${url}`);
             }
-        } catch (e) {
+        } catch (e: any) {
             console.error(e);
-            alert("Process failed. Please try again.");
+            // Guideline: Handle Requested entity was not found error by prompting for key selection again
+            if (e.message?.includes("Requested entity was not found")) {
+                alert("Please select a valid paid API key from a project with billing enabled.");
+                await (window as any).aistudio.openSelectKey();
+            } else {
+                alert("Process failed. Please try again.");
+            }
         } finally {
             setIsGenerating(false);
         }
@@ -111,7 +124,8 @@ const AILab: React.FC<AILabProps> = ({ onClose }) => {
                                 <div className="space-y-2">
                                     <label className="text-sm font-bold text-slate-400 uppercase tracking-wider">Aspect Ratio</label>
                                     <div className="flex flex-wrap gap-2">
-                                        {['1:1', '4:3', '3:4', '16:9', '9:16', '21:9'].map(ar => (
+                                        {/* Removed unsupported 21:9 aspect ratio */}
+                                        {['1:1', '4:3', '3:4', '16:9', '9:16'].map(ar => (
                                             <button
                                                 key={ar}
                                                 onClick={() => setAspectRatio(ar)}
