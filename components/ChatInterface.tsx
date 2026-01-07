@@ -30,7 +30,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ lesson, courseTitle }) =>
 
     const initChat = useCallback(() => {
         const ai = getAI();
-        // Updated model choice: use gemini-3-flash-preview for fast mode as it reliably supports search tools
         const model = isThinkingMode ? 'gemini-3-pro-preview' : 'gemini-3-flash-preview';
         
         chatRef.current = ai.chats.create({
@@ -89,7 +88,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ lesson, courseTitle }) =>
                 const c = chunk as GenerateContentResponse;
                 fullText += c.text || '';
                 
-                // Extract grounding if available in any chunk
                 const meta = c.candidates?.[0]?.groundingMetadata;
                 if (meta?.groundingChunks) {
                     grounding = meta.groundingChunks.map((g: any) => ({
@@ -119,7 +117,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ lesson, courseTitle }) =>
         }
     }, [input, isLoading, isThinkingMode]);
 
-    // Voice Message Feature
     const startRecording = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -163,7 +160,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ lesson, courseTitle }) =>
         }
     };
 
-    // Live API Session
     const stopLive = () => {
         if (liveSessionRef.current) {
             setIsLiveActive(false);
@@ -183,7 +179,7 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ lesson, courseTitle }) =>
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             
             const sessionPromise = ai.live.connect({
-                model: 'gemini-2.5-flash-native-audio-preview-09-2025',
+                model: 'gemini-2.5-flash-native-audio-preview-12-2025',
                 callbacks: {
                     onopen: () => {
                         const source = inputCtx.createMediaStreamSource(stream);
@@ -193,7 +189,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ lesson, courseTitle }) =>
                             const int16 = new Int16Array(inputData.length);
                             for (let i = 0; i < inputData.length; i++) int16[i] = inputData[i] * 32768;
                             const pcmBlob = { data: encodeBase64(new Uint8Array(int16.buffer)), mimeType: 'audio/pcm;rate=16000' };
-                            // CRITICAL: Initiating sendRealtimeInput after live.connect call resolves.
                             sessionPromise.then(s => s.sendRealtimeInput({ media: pcmBlob }));
                         };
                         source.connect(processor);
@@ -208,7 +203,6 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ lesson, courseTitle }) =>
                             const source = ctx.createBufferSource();
                             source.buffer = buffer;
                             source.connect(ctx.destination);
-                            // Schedule audio chunk with precise timing for gapless playback
                             source.start(nextStartTimeRef.current);
                             nextStartTimeRef.current += buffer.duration;
                         }
@@ -234,21 +228,21 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ lesson, courseTitle }) =>
     };
 
     return (
-        <div className="flex flex-col h-[600px] bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden shadow-2xl relative">
+        <div className="flex flex-col h-[600px] bg-slate-900 rounded-[2.5rem] border border-slate-800 overflow-hidden shadow-2xl relative ring-1 ring-white/5">
             {/* Header / Mode Toggles */}
-            <div className="bg-slate-800/90 px-4 py-3 flex items-center justify-between border-b border-slate-700 z-10">
+            <div className="bg-slate-800/80 backdrop-blur-xl px-6 py-4 flex items-center justify-between border-b border-white/5 z-10">
                 <div className="flex items-center gap-2">
                     <button 
                         onClick={() => setIsThinkingMode(true)}
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${isThinkingMode ? 'bg-purple-600 text-white shadow-lg shadow-purple-900/40' : 'bg-slate-700 text-slate-400 hover:text-slate-200'}`}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black tracking-widest transition-all uppercase ${isThinkingMode ? 'bg-brand-blue text-brand-darker shadow-lg shadow-brand-blue/20' : 'bg-white/5 text-slate-500 hover:text-white'}`}
                         title="Use high-intelligence Pro model"
                     >
                         <BrainIcon className="w-3.5 h-3.5" />
-                        THINKING
+                        DEEP
                     </button>
                     <button 
                         onClick={() => setIsThinkingMode(false)}
-                        className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${!isThinkingMode ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/40' : 'bg-slate-700 text-slate-400 hover:text-slate-200'}`}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[10px] font-black tracking-widest transition-all uppercase ${!isThinkingMode ? 'bg-emerald-500 text-brand-darker shadow-lg shadow-emerald-500/20' : 'bg-white/5 text-slate-500 hover:text-white'}`}
                         title="Use low-latency Flash model"
                     >
                         <SparklesIcon className="w-3.5 h-3.5" />
@@ -257,11 +251,11 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ lesson, courseTitle }) =>
                 </div>
                 <div className="flex items-center gap-2">
                     {isLiveActive ? (
-                        <button onClick={stopLive} className="flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black bg-red-500 text-white animate-pulse">
+                        <button onClick={stopLive} className="flex items-center gap-3 px-5 py-2 rounded-full text-[10px] font-black bg-red-500 text-white animate-pulse tracking-widest uppercase">
                             <span className="w-2 h-2 rounded-full bg-white animate-ping"></span> LIVE SESSION
                         </button>
                     ) : (
-                        <button onClick={startLive} className="flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-black bg-brand-blue text-white hover:bg-brand-light-blue transition-all">
+                        <button onClick={startLive} className="flex items-center gap-3 px-5 py-2 rounded-full text-[10px] font-black bg-brand-blue/10 text-brand-light-blue hover:bg-brand-blue hover:text-brand-darker transition-all border border-brand-blue/20 tracking-widest uppercase">
                             <MicIcon className="w-3.5 h-3.5" /> VOICE TUTOR
                         </button>
                     )}
@@ -270,47 +264,47 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ lesson, courseTitle }) =>
 
             {/* Error Message Toast */}
             {errorMessage && (
-                <div className="absolute top-16 left-1/2 -translate-x-1/2 bg-red-500/90 text-white text-xs font-bold py-2 px-4 rounded-full shadow-xl flex items-center gap-2 animate-slide-in-up z-20">
+                <div className="absolute top-20 left-1/2 -translate-x-1/2 bg-red-500 text-white text-[10px] font-black uppercase tracking-widest py-3 px-6 rounded-full shadow-2xl flex items-center gap-3 animate-slide-up z-20">
                     <span>{errorMessage}</span>
-                    <button onClick={() => setErrorMessage(null)}><XIcon className="w-3 h-3" /></button>
+                    <button onClick={() => setErrorMessage(null)} className="p-1 hover:bg-black/10 rounded-full"><XIcon className="w-3 h-3" /></button>
                 </div>
             )}
 
             {/* Messages Area */}
-            <div className="flex-grow p-6 overflow-y-auto space-y-6 scroll-smooth bg-gradient-to-b from-slate-900 to-slate-950">
+            <div className="flex-grow p-8 overflow-y-auto space-y-8 scroll-smooth bg-gradient-to-b from-slate-900 to-slate-950 no-scrollbar">
                 {messages.map((msg) => (
-                    <div key={msg.id} className={`flex items-start gap-4 ${msg.sender === MessageSender.USER ? 'justify-end' : 'justify-start'}`}>
-                        {msg.sender === MessageSender.AI && (
-                            <div className="w-9 h-9 rounded-xl bg-brand-blue flex items-center justify-center flex-shrink-0 shadow-lg shadow-brand-blue/20">
-                                <BotIcon className="w-5 h-5 text-white" />
-                            </div>
-                        )}
-                        <div className={`max-w-[80%] group ${msg.sender === MessageSender.USER ? 'order-1' : 'order-2'}`}>
-                            <div className={`px-5 py-3.5 rounded-2xl shadow-sm relative ${
+                    <div key={msg.id} className={`flex items-start gap-5 ${msg.sender === MessageSender.USER ? 'flex-row-reverse' : 'flex-row'}`}>
+                        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-xl ${
+                            msg.sender === MessageSender.AI ? 'bg-brand-blue text-brand-darker' : 'bg-slate-800 text-slate-400'
+                        }`}>
+                            {msg.sender === MessageSender.AI ? <BotIcon className="w-5 h-5" /> : <UserIcon className="w-5 h-5" />}
+                        </div>
+                        <div className={`max-w-[85%] ${msg.sender === MessageSender.USER ? 'items-end' : 'items-start'} flex flex-col gap-2`}>
+                            <div className={`px-6 py-4 rounded-[1.5rem] shadow-sm relative text-[14px] leading-relaxed select-text ${
                                 msg.sender === MessageSender.USER 
-                                ? 'bg-brand-blue text-white rounded-tr-none' 
-                                : 'bg-slate-800 text-slate-200 rounded-tl-none border border-slate-700'
+                                ? 'bg-brand-blue text-brand-darker rounded-tr-none font-bold' 
+                                : 'bg-white/5 text-slate-200 rounded-tl-none border border-white/5 backdrop-blur-sm'
                             }`}>
                                 {msg.isThinking && msg.isStreaming && (
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <div className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse"></div>
-                                        <span className="text-[10px] font-black text-purple-400 uppercase tracking-tighter">Deep Reasoning...</span>
+                                    <div className="flex items-center gap-2 mb-3 opacity-60">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-brand-light-blue animate-pulse"></div>
+                                        <span className="text-[9px] font-black text-brand-light-blue uppercase tracking-widest">Neural Processing</span>
                                     </div>
                                 )}
-                                <p className="whitespace-pre-wrap text-[15px] leading-relaxed select-text">{msg.text}</p>
+                                <p className="whitespace-pre-wrap">{msg.text}</p>
                                 {msg.isStreaming && <span className="inline-block w-2 h-4 bg-brand-light-blue/50 ml-1 animate-pulse rounded-sm"></span>}
                                 
                                 {/* Grounding URLs UI */}
                                 {msg.groundingUrls && msg.groundingUrls.length > 0 && (
-                                    <div className="mt-4 pt-3 border-t border-slate-700/50">
-                                        <div className="flex items-center gap-2 mb-2 text-slate-500">
+                                    <div className="mt-6 pt-4 border-t border-white/5">
+                                        <div className="flex items-center gap-2 mb-3 text-slate-500">
                                             <SearchIcon className="w-3 h-3" />
-                                            <span className="text-[10px] font-black uppercase tracking-widest">Verified Sources</span>
+                                            <span className="text-[9px] font-black uppercase tracking-widest">Verification Layer</span>
                                         </div>
                                         <div className="flex flex-wrap gap-2">
                                             {msg.groundingUrls.map((link, idx) => (
-                                                <a key={idx} href={link.uri} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[11px] bg-slate-900/50 hover:bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-700 transition-all text-brand-light-blue font-bold">
-                                                    <span className="truncate max-w-[140px]">{link.title}</span>
+                                                <a key={idx} href={link.uri} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[10px] bg-slate-950/50 hover:bg-slate-950 px-3 py-2 rounded-xl border border-white/5 transition-all text-brand-light-blue font-black uppercase tracking-tighter">
+                                                    <span className="truncate max-w-[120px]">{link.title}</span>
                                                     <ExternalLinkIcon className="w-3 h-3 opacity-50" />
                                                 </a>
                                             ))}
@@ -319,18 +313,13 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ lesson, courseTitle }) =>
                                 )}
                             </div>
                         </div>
-                        {msg.sender === MessageSender.USER && (
-                             <div className="w-9 h-9 rounded-xl bg-slate-700 flex items-center justify-center flex-shrink-0 shadow-lg">
-                                <UserIcon className="w-5 h-5 text-white" />
-                            </div>
-                        )}
                     </div>
                 ))}
                 <div ref={messagesEndRef} />
             </div>
 
             {/* Input Bar */}
-            <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="p-4 bg-slate-800/50 border-t border-slate-700 flex items-center gap-3 backdrop-blur-sm">
+            <form onSubmit={(e) => { e.preventDefault(); handleSendMessage(); }} className="p-6 bg-slate-800/80 backdrop-blur-2xl border-t border-white/5 flex items-center gap-4">
                 <button 
                     type="button"
                     onMouseDown={startRecording}
@@ -338,25 +327,27 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({ lesson, courseTitle }) =>
                     onMouseLeave={stopRecording}
                     onTouchStart={startRecording}
                     onTouchEnd={stopRecording}
-                    className={`p-3 rounded-xl transition-all ${isRecording ? 'bg-red-500 text-white animate-pulse' : 'bg-slate-700 text-slate-400 hover:text-white'}`}
+                    className={`w-14 h-14 flex items-center justify-center rounded-2xl transition-all ${isRecording ? 'bg-red-500 text-white animate-pulse shadow-lg shadow-red-500/20' : 'bg-white/5 text-slate-400 hover:text-white hover:bg-white/10'}`}
                     title="Hold to send voice message"
                 >
                     <MicIcon className="w-6 h-6" />
                 </button>
                 
-                <input
-                    type="text"
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    placeholder={isLiveActive ? "Voice session in progress..." : "Ask your tutor anything..."}
-                    disabled={isLoading || isLiveActive}
-                    className="flex-grow bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-brand-blue transition-all disabled:opacity-50 text-[15px]"
-                />
+                <div className="flex-grow relative group">
+                    <input
+                        type="text"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        placeholder={isLiveActive ? "Voice session active..." : "Query the E-Tutor intelligence..."}
+                        disabled={isLoading || isLiveActive}
+                        className="w-full bg-slate-900 border border-white/5 rounded-2xl px-6 py-4 text-white focus:outline-none focus:ring-2 focus:ring-brand-blue/50 transition-all disabled:opacity-50 text-[14px] font-medium"
+                    />
+                </div>
                 
                 <button 
                     type="submit" 
                     disabled={isLoading || !input.trim() || isLiveActive} 
-                    className="bg-brand-blue text-white rounded-xl p-3 disabled:bg-slate-700 disabled:text-slate-500 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-brand-blue/20"
+                    className="w-14 h-14 flex items-center justify-center bg-brand-blue text-brand-darker rounded-2xl disabled:bg-slate-800 disabled:text-slate-600 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-brand-blue/20"
                 >
                     {isLoading ? <LoaderIcon className="w-6 h-6 animate-spin" /> : <SendIcon className="w-6 h-6" />}
                 </button>

@@ -77,8 +77,9 @@ export const summarizeContent = async (content: string): Promise<string> => {
   const ai = getAI();
   const prompt = `Summarize the following text in three clear and concise key bullet points: ${content}`;
   try {
+    // Fix: Using correct model name for flash lite as per guidelines
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash-lite-latest",
+      model: "gemini-flash-lite-latest",
       contents: prompt,
     });
     return response.text.trim();

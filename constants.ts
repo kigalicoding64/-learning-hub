@@ -16,7 +16,18 @@ const WEB_MANAGEMENT_COURSE: Course = {
       id: 'L1',
       title: 'Intro to Web Architecture',
       duration: 20,
-      content: `Welcome to 'Web Management & Architecture' by Egreed Technology! This course will guide you through the essential concepts...`
+      content: `# Web Architecture Fundamentals
+Welcome to the Egreed Engineering curriculum. 
+
+In this module, we explore:
+- **Server-Side Rendering (SSR)** vs Client-Side Rendering
+- Micro-services orchestration
+- Scalability patterns
+
+> "The architecture of a system is the set of structures needed to reason about the system."
+
+Feel free to use the **AI Tutor** for deeper insights into any of these concepts.`,
+      videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
     }
   ]
 };
@@ -36,7 +47,10 @@ const HTML_CSS_COURSE: Course = {
             id: 'HC1',
             title: 'Your First HTML Page',
             duration: 15,
-            content: `Welcome to the world of web development! HTML stands for HyperText Markup Language...`
+            content: `Welcome to the world of web development! 
+            
+## Why HTML?
+HTML stands for **HyperText Markup Language**. It's the skeleton of every website you've ever visited.`
         }
     ]
 };
@@ -62,7 +76,7 @@ const generatePlaceholderCourses = (): Course[] => {
             rating: 4.0 + (i % 10) / 10,
             students: 500 + (i * 12),
             category,
-            lessons: [{ id: '1', title: 'Course Introduction', duration: 10, content: 'Placeholder content' }]
+            lessons: [{ id: '1', title: 'Course Introduction', duration: 10, content: '# Introduction\nPlaceholder markdown content.' }]
         });
     }
     return courses;

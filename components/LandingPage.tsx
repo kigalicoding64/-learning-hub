@@ -4,9 +4,10 @@ import { SparklesIcon, BookOpenIcon, BrainIcon, VideoIcon, CheckCircleIcon, Play
 
 interface LandingPageProps {
     onExplore: () => void;
+    onNavigate: (key: string) => void;
 }
 
-const LandingPage: React.FC<LandingPageProps> = ({ onExplore }) => {
+const LandingPage: React.FC<LandingPageProps> = ({ onExplore, onNavigate }) => {
     return (
         <div className="relative">
             {/* Background Grid & Blobs */}
@@ -40,7 +41,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onExplore }) => {
                         >
                             Access Ecosystem
                         </button>
-                        <button className="w-full sm:w-auto px-10 py-5 bg-transparent text-white text-lg font-black rounded-xl hover:bg-white/5 border border-white/10 transition-all uppercase tracking-widest flex items-center justify-center gap-3">
+                        <button 
+                            onClick={() => onNavigate('about')}
+                            className="w-full sm:w-auto px-10 py-5 bg-transparent text-white text-lg font-black rounded-xl hover:bg-white/5 border border-white/10 transition-all uppercase tracking-widest flex items-center justify-center gap-3"
+                        >
                             <PlayIcon className="w-5 h-5" />
                             Core Services
                         </button>
@@ -49,12 +53,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onExplore }) => {
                     {/* Stats strip */}
                     <div className="mt-32 grid grid-cols-2 lg:grid-cols-4 gap-12 border-t border-white/5 pt-16 opacity-0 animate-fade-in delay-700">
                         {[
-                            { val: '150+', label: 'Proprietary Models' },
-                            { val: '24/7', label: 'AI Mentorship' },
-                            { val: '98%', label: 'Industry Placement' },
-                            { val: 'GLOBAL', label: 'Egreed Partner Network' }
+                            { val: '150+', label: 'Proprietary Models', key: 'ai-research' },
+                            { val: '24/7', label: 'AI Mentorship', key: 'about' },
+                            { val: '98%', label: 'Industry Placement', key: 'career-tracks' },
+                            { val: 'GLOBAL', label: 'Egreed Partner Network', key: 'partners' }
                         ].map((stat, i) => (
-                            <div key={i} className="text-center group">
+                            <div key={i} className="text-center group cursor-pointer" onClick={() => onNavigate(stat.key)}>
                                 <p className="text-3xl font-black text-white mb-2 tracking-tighter group-hover:text-brand-light-blue transition-colors">{stat.val}</p>
                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">{stat.label}</p>
                             </div>
@@ -91,24 +95,24 @@ const LandingPage: React.FC<LandingPageProps> = ({ onExplore }) => {
                         </div>
                         <div className="lg:w-1/2 grid grid-cols-2 gap-6 relative">
                             <div className="space-y-6 pt-12">
-                                <div className="bg-gradient-to-br from-brand-secondary to-brand-dark border border-white/10 p-8 rounded-2xl aspect-square flex flex-col justify-end group hover:border-brand-blue/50 transition-all">
+                                <div onClick={() => onNavigate('ai-research')} className="cursor-pointer bg-gradient-to-br from-brand-secondary to-brand-dark border border-white/10 p-8 rounded-2xl aspect-square flex flex-col justify-end group hover:border-brand-blue/50 transition-all">
                                     <BrainIcon className="w-10 h-10 text-brand-blue mb-4" />
                                     <h4 className="text-white font-bold uppercase text-sm mb-2">Cognitive Labs</h4>
                                     <p className="text-xs text-slate-500">Gemini Pro Integration</p>
                                 </div>
-                                <div className="bg-gradient-to-br from-brand-secondary to-brand-dark border border-white/10 p-8 rounded-2xl aspect-square flex flex-col justify-end group hover:border-brand-blue/50 transition-all">
+                                <div onClick={() => onNavigate('open-source')} className="cursor-pointer bg-gradient-to-br from-brand-secondary to-brand-dark border border-white/10 p-8 rounded-2xl aspect-square flex flex-col justify-end group hover:border-brand-blue/50 transition-all">
                                     <VideoIcon className="w-10 h-10 text-brand-blue mb-4" />
-                                    <h4 className="text-white font-bold uppercase text-sm mb-2">Veo Visuals</h4>
+                                    <h4 className="text-white font-bold uppercase text-sm mb-2">Open Source</h4>
                                     <p className="text-xs text-slate-500">Next-Gen Video AI</p>
                                 </div>
                             </div>
                             <div className="space-y-6">
-                                <div className="bg-gradient-to-br from-brand-secondary to-brand-dark border border-white/10 p-8 rounded-2xl aspect-square flex flex-col justify-end group hover:border-brand-blue/50 transition-all">
+                                <div onClick={() => onNavigate('certifications')} className="cursor-pointer bg-gradient-to-br from-brand-secondary to-brand-dark border border-white/10 p-8 rounded-2xl aspect-square flex flex-col justify-end group hover:border-brand-blue/50 transition-all">
                                     <CheckCircleIcon className="w-10 h-10 text-brand-blue mb-4" />
                                     <h4 className="text-white font-bold uppercase text-sm mb-2">Pro Certs</h4>
                                     <p className="text-xs text-slate-500">Global Recognition</p>
                                 </div>
-                                <div className="bg-gradient-to-br from-brand-secondary to-brand-dark border border-white/10 p-8 rounded-2xl aspect-square flex flex-col justify-end group hover:border-brand-blue/50 transition-all">
+                                <div onClick={onExplore} className="cursor-pointer bg-gradient-to-br from-brand-secondary to-brand-dark border border-white/10 p-8 rounded-2xl aspect-square flex flex-col justify-end group hover:border-brand-blue/50 transition-all">
                                     <BookOpenIcon className="w-10 h-10 text-brand-blue mb-4" />
                                     <h4 className="text-white font-bold uppercase text-sm mb-2">Curriculum</h4>
                                     <p className="text-xs text-slate-500">Engineer-Led</p>
@@ -135,7 +139,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onExplore }) => {
                                 <p className="text-slate-400 text-sm mb-8 leading-relaxed">{track.desc}</p>
                                 <div className="flex items-center justify-between">
                                     <span className="text-xs font-bold text-slate-500 uppercase">{track.count} Modules</span>
-                                    <button onClick={onExplore} className="text-white font-bold text-xs uppercase flex items-center gap-2 group-hover:gap-4 transition-all">
+                                    <button onClick={() => onNavigate('career-tracks')} className="text-white font-bold text-xs uppercase flex items-center gap-2 group-hover:gap-4 transition-all">
                                         Explore <ExternalLinkIcon className="w-4 h-4" />
                                     </button>
                                 </div>
