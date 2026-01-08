@@ -373,7 +373,7 @@ const LessonContent: React.FC<LessonContentProps> = ({ lesson, courseTitle, isLe
         <div className="bg-slate-900 p-12 lg:p-20 rounded-[3.5rem] border border-white/5 shadow-2xl flex flex-col justify-center relative overflow-hidden group ring-1 ring-white/5">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brand-blue/20 to-transparent"></div>
             <h2 className="text-5xl font-black text-white mb-8 uppercase italic tracking-tighter leading-none">Engineering <br /><span className="text-brand-light-blue">Validation</span></h2>
-            <p className="text-slate-400 mb-12 text-lg font-medium leading-relaxed max-w-md">Verify your knowledge through our automated intelligence labs. Achieving >85% score issues a global Egreed credential.</p>
+            <p className="text-slate-400 mb-12 text-lg font-medium leading-relaxed max-w-md">Verify your knowledge through our automated intelligence labs. Achieving 85% or higher score issues a global Egreed credential.</p>
             <button 
                 onClick={async () => {
                     setLoadingAction('quiz');

@@ -1,134 +1,89 @@
 
-import { Course } from './types';
+import { Course, Module, Lesson, Quiz } from './types';
 
-const WEB_ARCH_COURSE: Course = {
-  id: 'web-arch-v1',
-  title: 'Enterprise Web Architecture & System Design',
-  description: 'Master the high-level design of scalable web systems. Learn to manage millions of concurrent users with industrial-grade patterns.',
-  price: 49.99,
-  level: 'Advanced',
-  rating: 4.9,
-  students: 15400,
-  category: 'Computer Science',
-  partner: 'Egreed Engineering',
-  skillsAcquired: ['System Design', 'Microservices', 'Load Balancing', 'Database Sharding', 'CDN Orchestration', 'HA Architecture'],
-  lessons: [
-    {
-      id: 'WA-L1',
-      title: 'Phase 1: Foundations of Global Scalability',
-      duration: 25,
-      content: `# Foundations of Global Scalability\n\nScaling is not just about adding more servers; it's about managing state, concurrency, and latency.\n\n## Learning Objectives\n- Differentiate between Vertical and Horizontal scaling.\n- Understand the CAP Theorem in distributed systems.\n- Master the concept of "Stateless" application design.`,
-      videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
-    },
-    {
-      id: 'WA-L2',
-      title: 'Phase 2: Load Balancing & Reverse Proxies',
-      duration: 30,
-      content: `# Load Balancing Strategies\n\nA Load Balancer is the traffic cop of your architecture. Learn to distribute requests across clusters.\n\n## Key Algorithms\n- Round Robin\n- Weighted Least Connections\n- IP Hashing for Session Affinity`,
-      videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-    },
-    {
-      id: 'WA-L3',
-      title: 'Phase 3: High-Performance Caching Layer',
-      duration: 20,
-      content: `# Distributed Caching\n\nImplement Redis and Memcached to reduce database load and improve response times.\n\n## Implementation\n- Write-Through vs Cache-Aside strategies.\n- Cache Invalidation protocols.\n- Edge caching with Global CDNs.`
-    },
-    {
-      id: 'WA-L4',
-      title: 'Phase 4: Database Sharding & Partitioning',
-      duration: 35,
-      content: `# Database Scaling\n\nWhen a single DB becomes the bottleneck, we partition. Learn horizontal scaling for RDBMS and NoSQL systems.`
-    },
-    {
-      id: 'WA-L5',
-      title: 'Phase 5: Microservices Orchestration',
-      duration: 40,
-      content: `# Microservices vs Monoliths\n\nBreaking down the application into manageable, independent services. Master gRPC and message brokers like RabbitMQ.`
-    },
-    {
-      id: 'WA-L6',
-      title: 'Phase 6: Final System Design Interview Prep',
-      duration: 50,
-      content: `# Capstone: Building a Global Video Streamer\n\nApply all concepts to design a system capable of handling 100M+ active users. Focus on cost-efficiency and 99.999% availability.`
+const generateMockQuiz = (title: string): Quiz => ({
+  title: `Validation Quiz: ${title}`,
+  questions: [
+    { question: `What is the primary architectural principle of ${title}?`, options: ["Abstraction", "Encapsulation", "Redundancy", "Inheritance"], correctAnswer: "Abstraction" },
+    { question: `Which protocol is best suited for ${title} deployment?`, options: ["REST", "gRPC", "GraphQL", "WebSockets"], correctAnswer: "REST" },
+    { question: `How do you measure efficiency in ${title}?`, options: ["Throughput", "Latency", "Cost", "All of the above"], correctAnswer: "All of the above" }
+  ]
+});
+
+const generateDeepSyllabus = (courseId: string, title: string, category: string): Module[] => {
+  const moduleCount = 8;
+  const modules: Module[] = [];
+
+  for (let m = 1; m <= moduleCount; m++) {
+    const moduleId = `${courseId}-M${m}`;
+    const lessons: Lesson[] = [
+      { 
+        id: `${moduleId}-L1`, 
+        title: `Introduction to Phase ${m}`, 
+        duration: 15, 
+        type: 'video', 
+        content: `# Phase ${m}: Core Logic\nMastering the fundamental patterns of ${title}.` 
+      },
+      { 
+        id: `${moduleId}-L2`, 
+        title: `Deep Implementation`, 
+        duration: 30, 
+        type: 'text', 
+        content: `## Technical Deep Dive\nExplaining the variables and constants required for industrial-grade ${title}.` 
+      }
+    ];
+
+    modules.push({
+      id: moduleId,
+      title: `Module ${m}: Advanced ${title} Patterns`,
+      lessons,
+      practiceTask: `Apply the principles from Phase ${m} to a real-world scenario. Submit a 500-word architectural review.`,
+      quiz: generateMockQuiz(title)
+    });
+  }
+
+  return modules;
+};
+
+const generateCatalog = (): Course[] => {
+  const catalog: Course[] = [];
+  let globalIdCounter = 1;
+
+  const sectors = [
+    { cat: 'TECHNOLOGY & IT', target: 180, titles: ['Python Master', 'React Architect', 'DevOps Lead', 'Cloud Engineer', 'Cyber Security Specialist'] },
+    { cat: 'BUSINESS', target: 150, titles: ['Startup Founder', 'Project Manager', 'HR Lead', 'Operations Chief'] },
+    { cat: 'MARKETING', target: 120, titles: ['SEO Guru', 'Digital Strategist', 'Social Media Lead'] },
+    { cat: 'DESIGN', target: 100, titles: ['UI Designer', 'UX Researcher', 'Motion Artist'] },
+    { cat: 'EDUCATION', target: 100, titles: ['Instructional Designer', 'STEM Teacher'] },
+    { cat: 'LANGUAGES', target: 160, titles: ['English Fluency', 'French for Business', 'Swahili Expert'] },
+    { cat: 'FINANCE', target: 70, titles: ['Crypto Analyst', 'Stock Trader', 'Financial Planner'] },
+    { cat: 'ENGINEERING', target: 60, titles: ['Electrical Tech', 'Solar Installer', 'Civil Engineer'] },
+    { cat: 'PERSONAL', target: 80, titles: ['Mindfulness Lead', 'Personal Growth Specialist'] }
+  ];
+
+  sectors.forEach(sector => {
+    for (let i = 0; i < sector.target; i++) {
+      const base = sector.titles[i % sector.titles.length];
+      const title = i < sector.titles.length ? base : `${base} Level ${Math.floor(i / sector.titles.length) + 1}`;
+      const id = `eg-${globalIdCounter++}`;
+      
+      catalog.push({
+        id,
+        title,
+        category: sector.cat,
+        description: `Professional institutional training in ${title}. Master industrial standards with Egreed Technology.`,
+        price: i % 10 === 0 ? 0 : 29.99 + (i % 70),
+        level: i % 3 === 0 ? 'Advanced' : 'Beginner',
+        rating: 4.5 + (Math.random() * 0.5),
+        students: 5000 + (i * 100),
+        skillsAcquired: [base, 'Critical Reasoning', 'Industry Standards'],
+        tags: i % 5 === 0 ? ['popular'] : i % 8 === 0 ? ['trending'] : ['needed'],
+        modules: generateDeepSyllabus(id, title, sector.cat)
+      });
     }
-  ]
+  });
+
+  return catalog;
 };
 
-const AI_ENGINEERING_COURSE: Course = {
-  id: 'ai-eng-v1',
-  title: 'Fullstack AI Engineering: LLMs & RAG',
-  description: 'Integrate advanced intelligence into your applications. Learn Prompt Engineering, Vector Databases, and Agentic workflows.',
-  price: 59.99,
-  level: 'Advanced',
-  rating: 4.95,
-  students: 8900,
-  category: 'Computer Science',
-  partner: 'Egreed AI Labs',
-  skillsAcquired: ['LLM Orchestration', 'Vector DBs', 'Prompt Engineering', 'RAG Architectures', 'AI Agents', 'Semantic Search'],
-  lessons: [
-    {
-      id: 'AI-L1',
-      title: 'Phase 1: The Modern AI Stack',
-      duration: 20,
-      content: `# Introduction to Generative Engineering\n\nMoving from consumer use to production-grade integration.`,
-      videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4'
-    },
-    {
-      id: 'AI-L2',
-      title: 'Phase 2: Scientific Prompt Engineering',
-      duration: 25,
-      content: `# Prompting as a Code Discipline\n\nChain-of-Thought, Few-Shot, and System Instruction mastery.`
-    },
-    {
-      id: 'AI-L3',
-      title: 'Phase 3: Vector Embeddings & Databases',
-      duration: 40,
-      content: `# Semantic Search Mechanics\n\nImplementing Pinecone, Weaviate, or ChromaDB for high-dimensional data retrieval.`
-    },
-    {
-      id: 'AI-L4',
-      title: 'Phase 4: RAG Pipeline Construction',
-      duration: 45,
-      content: `# Retrieval Augmented Generation\n\nSolving hallucinations with grounded data pipelines.`
-    },
-    {
-      id: 'AI-L5',
-      title: 'Phase 5: Function Calling & Agentic Tools',
-      duration: 35,
-      content: `# Giving AI Hands\n\nAllowing models to interact with APIs and execute code safely.`
-    },
-    {
-      id: 'AI-L6',
-      title: 'Phase 6: Deployment & Monitoring (LLMOps)',
-      duration: 30,
-      content: `# Production AI\n\nScaling inference, managing token costs, and monitoring drift.`
-    }
-  ]
-};
-
-const UI_DESIGN_COURSE: Course = {
-  id: 'ui-design-v1',
-  title: 'Modern UI/UX Design with CSS Grid & Flexbox',
-  description: 'Go beyond the basics. Build fluid, accessible, and stunning interfaces that work on every device.',
-  price: 29.99,
-  level: 'Beginner',
-  rating: 4.85,
-  students: 42000,
-  category: 'Design',
-  partner: 'Egreed Design Hub',
-  skillsAcquired: ['Responsive Design', 'CSS Grid', 'Flexbox', 'Web Accessibility', 'Modern CSS Variables', 'Typography'],
-  lessons: [
-    { id: 'UI-L1', title: 'Phase 1: The Modern Box Model', duration: 15, content: `# CSS Foundations\n\nMastering sizing, spacing, and layout logic.`, videoUrl: 'https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4' },
-    { id: 'UI-L2', title: 'Phase 2: Flexbox Mastery', duration: 25, content: `# Dynamic Layouts\n\nOne-dimensional alignment and distribution.` },
-    { id: 'UI-L3', title: 'Phase 3: CSS Grid Revolution', duration: 30, content: `# Two-Dimensional Power\n\nComplex dashboard layouts with Grid Areas.` },
-    { id: 'UI-L4', title: 'Phase 4: Accessibility (A11y)', duration: 20, content: `# Designing for All\n\nSemantic HTML, ARIA labels, and contrast standards.` },
-    { id: 'UI-L5', title: 'Phase 5: Animation & Interactions', duration: 25, content: `# Living Interfaces\n\nMicro-interactions with Framer Motion and CSS.` },
-    { id: 'UI-L6', title: 'Phase 6: The Design-to-Code Pipeline', duration: 30, content: `# Figma Mastery\n\nImplementing professional design systems in React.` }
-  ]
-};
-
-export const COURSES: Course[] = [
-    WEB_ARCH_COURSE,
-    AI_ENGINEERING_COURSE,
-    UI_DESIGN_COURSE,
-];
+export const COURSES: Course[] = generateCatalog();

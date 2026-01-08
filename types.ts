@@ -4,16 +4,29 @@ export interface User {
   email: string;
   fullName: string;
   joinedAt: string;
+  country?: string;
+  language?: string;
+  educationLevel?: string;
   goals?: string[];
   experienceLevel?: string;
+  role: 'learner' | 'admin' | 'instructor';
 }
 
 export interface Lesson {
   id: string;
   title: string;
-  duration: number; // in minutes
+  duration: number; 
   content: string;
   videoUrl?: string;
+  type: 'video' | 'text' | 'task';
+}
+
+export interface Module {
+  id: string;
+  title: string;
+  lessons: Lesson[];
+  quiz?: Quiz;
+  practiceTask?: string;
 }
 
 export interface Course {
@@ -21,13 +34,23 @@ export interface Course {
   title: string;
   description: string;
   price: number; 
-  lessons: Lesson[];
+  modules: Module[];
   level: 'Beginner' | 'Intermediate' | 'Advanced';
   rating: number;
   students: number;
   category: string;
-  partner?: string;
-  skillsAcquired?: string[];
+  skillsAcquired: string[];
+  tags?: ('popular' | 'trending' | 'needed')[];
+}
+
+export interface Enrollment {
+  courseId: string;
+  progress: number; // 0-100
+  completedLessons: string[]; // lessonIds
+  completedQuizzes: string[]; // moduleIds
+  examScore?: number;
+  enrolledAt: string;
+  certificateHash?: string;
 }
 
 export enum MessageSender {
@@ -40,8 +63,6 @@ export interface ChatMessage {
   text: string;
   sender: MessageSender;
   isStreaming?: boolean;
-  groundingUrls?: Array<{title: string, uri: string}>;
-  isThinking?: boolean;
 }
 
 export interface QuizQuestion {
@@ -55,6 +76,4 @@ export interface Quiz {
   questions: QuizQuestion[];
 }
 
-export type AILabTool = 'image-gen' | 'image-analyze' | 'video-gen' | 'video-analyze' | 'transcription' | 'tts';
-
-export type ViewState = 'landing' | 'catalog' | 'course' | 'static' | 'verify' | 'settings';
+export type ViewState = 'landing' | 'onboarding' | 'catalog' | 'dashboard' | 'course' | 'verify' | 'settings' | 'admin' | 'static';

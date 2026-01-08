@@ -16,7 +16,9 @@ import {
     ImageIcon,
     EgreedLogoIcon,
     ShieldIcon,
-    RwandaFlagIcon
+    RwandaFlagIcon,
+    PlayIcon,
+    ZapIcon
 } from './Icons';
 
 interface StaticPageProps {
@@ -24,6 +26,39 @@ interface StaticPageProps {
     onReturn: () => void;
     onExplore: () => void;
 }
+
+const TutorialCard: React.FC<{ title: string; desc: string; videoUrl: string; icon: React.FC<any> }> = ({ title, desc, videoUrl, icon: Icon }) => (
+    <div className="bg-slate-900/50 border border-white/5 rounded-[2.5rem] overflow-hidden group hover:border-brand-blue/30 transition-all flex flex-col shadow-2xl">
+        <div className="aspect-video relative overflow-hidden bg-black">
+            <video 
+                src={videoUrl} 
+                className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity"
+                muted
+                loop
+                onMouseOver={(e) => (e.target as HTMLVideoElement).play()}
+                onMouseOut={(e) => {
+                    (e.target as HTMLVideoElement).pause();
+                    (e.target as HTMLVideoElement).currentTime = 0;
+                }}
+            />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 bg-brand-blue/20 backdrop-blur-md rounded-full flex items-center justify-center text-brand-blue border border-brand-blue/30 group-hover:bg-brand-blue group-hover:text-brand-darker transition-all">
+                    <PlayIcon className="w-6 h-6 ml-1" />
+                </div>
+            </div>
+            <div className="absolute top-4 left-4">
+                <div className="bg-brand-dark/80 backdrop-blur-md px-3 py-1 rounded-xl border border-white/10 flex items-center gap-2">
+                    <Icon className="w-3 h-3 text-brand-blue" />
+                    <span className="text-[8px] font-black text-white uppercase tracking-widest">Feature Insight</span>
+                </div>
+            </div>
+        </div>
+        <div className="p-8">
+            <h4 className="text-lg font-black text-white uppercase italic tracking-tighter mb-2 group-hover:text-brand-light-blue transition-colors">{title}</h4>
+            <p className="text-slate-500 text-xs font-medium leading-relaxed">{desc}</p>
+        </div>
+    </div>
+);
 
 const StaticPage: React.FC<StaticPageProps> = ({ pageKey, onReturn, onExplore }) => {
     const renderContent = () => {
@@ -64,7 +99,8 @@ const StaticPage: React.FC<StaticPageProps> = ({ pageKey, onReturn, onExplore })
                 );
             case 'about':
                 return (
-                    <div className="space-y-20 animate-fade-in">
+                    <div className="space-y-32 animate-fade-in pb-20">
+                        {/* Hero / Mission Section */}
                         <div className="grid lg:grid-cols-2 gap-20 items-center">
                             <div className="relative aspect-square bg-slate-900 rounded-[4rem] overflow-hidden group border border-white/10">
                                 <div className="absolute inset-0 bg-grid opacity-20 group-hover:opacity-40 transition-opacity"></div>
@@ -94,6 +130,73 @@ const StaticPage: React.FC<StaticPageProps> = ({ pageKey, onReturn, onExplore })
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        {/* Video Tutorials Section */}
+                        <div className="space-y-16">
+                            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/5 pb-12">
+                                <div className="space-y-4">
+                                    <h3 className="text-4xl md:text-5xl font-black text-white uppercase italic tracking-tighter leading-none">Engineering <span className="text-brand-light-blue">Walkthroughs</span></h3>
+                                    <p className="text-slate-500 font-black uppercase tracking-[0.3em] text-[10px]">Visualizing the Egreed Intelligence Ecosystem</p>
+                                </div>
+                                <div className="flex items-center gap-4 px-6 py-3 bg-brand-blue/10 rounded-2xl border border-brand-blue/20">
+                                    <VideoIcon className="w-4 h-4 text-brand-blue" />
+                                    <span className="text-[10px] font-black text-brand-blue uppercase tracking-widest">Institutional Tutorials Active</span>
+                                </div>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+                                <TutorialCard 
+                                    title="AI Real-time Tutoring"
+                                    desc="Experience how our E-Tutor utilizes the Gemini Live API for low-latency, natural voice interactions during complex code architectural reviews."
+                                    videoUrl="https://storage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+                                    icon={MicIcon}
+                                />
+                                <TutorialCard 
+                                    title="Industrial Lab Assessments"
+                                    desc="Walkthrough of our automated engineering labs that utilize deep reasoning models to validate your technical proficiency and issue credentials."
+                                    videoUrl="https://storage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"
+                                    icon={ZapIcon}
+                                />
+                                <TutorialCard 
+                                    title="Localized Payment Sync"
+                                    desc="Step-by-step guide on how we integrated Rwanda's MoMo and Airtel Money gateways for seamless, secure institutional enrollment."
+                                    videoUrl="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+                                    icon={LockIcon}
+                                />
+                                <TutorialCard 
+                                    title="Advanced Media Analysis"
+                                    desc="See our multimodal AI in action analyzing industrial diagrams, architectural blueprints, and engineering documentation in real-time."
+                                    videoUrl="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+                                    icon={ImageIcon}
+                                />
+                                <TutorialCard 
+                                    title="Credential Verification"
+                                    desc="Learn about our global academic ledger and how the Egreed verification hash ensures your professional certifications are authentic globally."
+                                    videoUrl="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
+                                    icon={ShieldIcon}
+                                />
+                                <TutorialCard 
+                                    title="Course Catalog Flow"
+                                    desc="Navigating our 1,000+ module library, utilizing smart search grounding and collection filters to find your specific engineering trajectory."
+                                    videoUrl="https://storage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
+                                    icon={BookOpenIcon}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Rwandan Hub Badge */}
+                        <div className="bg-slate-900 border border-white/10 p-12 rounded-[3.5rem] flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-20 opacity-[0.03] group-hover:opacity-10 transition-opacity">
+                                <RwandaFlagIcon className="w-64 h-64" />
+                            </div>
+                            <div className="space-y-4 text-center md:text-left relative z-10">
+                                <h4 className="text-3xl font-black text-white italic tracking-tighter uppercase">Local Impact, <span className="text-brand-light-blue">Global Scale</span></h4>
+                                <p className="text-slate-400 text-sm font-medium max-w-md">Our Kigali-based engineering team works tirelessly to ensure the platform remains at the cutting edge of educational technology.</p>
+                            </div>
+                            <button onClick={onExplore} className="px-10 py-5 bg-brand-blue text-brand-darker font-black rounded-2xl hover:bg-brand-light-blue transition-all uppercase tracking-[0.2em] text-[10px] shadow-2xl shadow-brand-blue/20 relative z-10">
+                                Join the Hub
+                            </button>
                         </div>
                     </div>
                 );
@@ -138,7 +241,7 @@ const StaticPage: React.FC<StaticPageProps> = ({ pageKey, onReturn, onExplore })
                                     <h3 className="text-white font-black uppercase tracking-widest text-sm">1. Data Sovereignty & Collection</h3>
                                 </div>
                                 <p className="text-slate-400 leading-relaxed text-sm">
-                                    At Egreed Technology, we adhere to the Law N° 058/2021 of 13/10/2021 relating to the protection of personal data and privacy in Rwanda, alongside GDPR standards for global users. We collect only essential telemetry required to validate engineering credentials and optimize AI-tutoring performance. This includes identity parameters, academic progress, and synthetic interaction logs.
+                                    At Egreed Technology, we adhere to the Law N&deg; 058/2021 of 13/10/2021 relating to the protection of personal data and privacy in Rwanda, alongside GDPR standards for global users. We collect only essential telemetry required to validate engineering credentials and optimize AI-tutoring performance. This includes identity parameters, academic progress, and synthetic interaction logs.
                                 </p>
                             </section>
 
@@ -178,7 +281,7 @@ const StaticPage: React.FC<StaticPageProps> = ({ pageKey, onReturn, onExplore })
                                 <RwandaFlagIcon className="w-5 h-5 shadow-sm" />
                                 <span>Compliant with RW DP Law 2021</span>
                             </div>
-                            <span className="flex items-center gap-2">Last Revision: 2025.03.14 • Secure v4.2</span>
+                            <span className="flex items-center gap-2">Last Revision: 2025.03.14 &bull; Secure v4.2</span>
                         </div>
                     </div>
                 );
@@ -201,7 +304,7 @@ const StaticPage: React.FC<StaticPageProps> = ({ pageKey, onReturn, onExplore })
                                     <h3 className="text-white font-black uppercase tracking-widest text-sm">1. Acceptance of Engineering Code</h3>
                                 </div>
                                 <p className="text-slate-400 leading-relaxed text-sm">
-                                    By accessing the Egreed Technology hub, you agree to utilize the provided tools—including but not limited to Gemini Pro, Veo, and LLM Orchestration—within the ethical boundaries of professional engineering. You agree not to reverse-engineer the platform components or utilize AI tools for the production of harmful, illegal, or deceptive digital artifacts.
+                                    By accessing the Egreed Technology hub, you agree to utilize the provided tools&mdash;including but not limited to Gemini Pro, Veo, and LLM Orchestration&mdash;within the ethical boundaries of professional engineering. You agree not to reverse-engineer the platform components or utilize AI tools for the production of harmful, illegal, or deceptive digital artifacts.
                                 </p>
                             </section>
 
@@ -241,7 +344,7 @@ const StaticPage: React.FC<StaticPageProps> = ({ pageKey, onReturn, onExplore })
                                 <EgreedLogoIcon className="w-5 h-5 opacity-40" />
                                 <span>Institutional Compliance Active</span>
                             </div>
-                            <span className="flex items-center gap-2">Standard Protocol v4.2 • Made in RW</span>
+                            <span className="flex items-center gap-2">Standard Protocol v4.2 &bull; Made in RW</span>
                         </div>
                     </div>
                 );
