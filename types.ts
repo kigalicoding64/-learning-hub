@@ -1,4 +1,13 @@
 
+export interface User {
+  id: string;
+  email: string;
+  fullName: string;
+  joinedAt: string;
+  goals?: string[];
+  experienceLevel?: string;
+}
+
 export interface Lesson {
   id: string;
   title: string;
@@ -18,6 +27,7 @@ export interface Course {
   students: number;
   category: string;
   partner?: string;
+  skillsAcquired?: string[];
 }
 
 export enum MessageSender {
@@ -46,3 +56,5 @@ export interface Quiz {
 }
 
 export type AILabTool = 'image-gen' | 'image-analyze' | 'video-gen' | 'video-analyze' | 'transcription' | 'tts';
+
+export type ViewState = 'landing' | 'catalog' | 'course' | 'static' | 'verify' | 'settings';

@@ -5,12 +5,13 @@ import { Quiz } from '../types';
 export const getAI = () => new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 
 /**
- * Generates a quiz based on the provided lesson content.
+ * Generates a comprehensive quiz based on the provided lesson content.
+ * Updated to generate 10 questions for more thorough testing.
  */
 export const generateQuiz = async (lessonContent: string, lessonTitle: string): Promise<Quiz> => {
   const ai = getAI();
-  const prompt = `Based on the following lesson content, generate a multiple-choice quiz with 3 questions. 
-For each question, provide 4 options and indicate the correct answer. The quiz should test understanding of the key concepts in the text.
+  const prompt = `Based on the following lesson content, generate a comprehensive multiple-choice quiz with 10 questions. 
+For each question, provide 4 options and indicate the correct answer. The questions should range from basic recall to complex application of the engineering principles discussed. 
 
 Lesson Content:
 ---
@@ -23,7 +24,7 @@ ${lessonContent}
     properties: {
       questions: {
         type: Type.ARRAY,
-        description: "An array of quiz questions.",
+        description: "An array of 10 quiz questions.",
         items: {
           type: Type.OBJECT,
           properties: {
@@ -61,7 +62,7 @@ ${lessonContent}
     const jsonText = response.text.trim();
     const parsedJson = JSON.parse(jsonText);
     return {
-      title: `Quiz: ${lessonTitle}`,
+      title: `Verification Assessment: ${lessonTitle}`,
       questions: parsedJson.questions,
     };
   } catch (error) {
@@ -77,7 +78,6 @@ export const summarizeContent = async (content: string): Promise<string> => {
   const ai = getAI();
   const prompt = `Summarize the following text in three clear and concise key bullet points: ${content}`;
   try {
-    // Fix: Using correct model name for flash lite as per guidelines
     const response = await ai.models.generateContent({
       model: "gemini-flash-lite-latest",
       contents: prompt,

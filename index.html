@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Egreed Technology - AI-Native Learning Ecosystem</title>
+    <title>Egreed Technology - AI-Native Learning With Egreed technology BY EGREEDLEARNING PLATFORM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -59,14 +59,55 @@
       .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
       
       /* Markdown basic styles */
-      .markdown-content h1 { font-weight: 900; font-size: 2.25rem; margin-bottom: 1rem; color: white; }
-      .markdown-content h2 { font-weight: 800; font-size: 1.875rem; margin-top: 2rem; margin-bottom: 1rem; color: white; }
-      .markdown-content h3 { font-weight: 700; font-size: 1.5rem; margin-top: 1.5rem; margin-bottom: 0.75rem; color: white; }
-      .markdown-content p { margin-bottom: 1.25rem; line-height: 1.8; color: #cbd5e1; }
-      .markdown-content ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1.25rem; }
-      .markdown-content li { margin-bottom: 0.5rem; color: #cbd5e1; }
-      .markdown-content strong { color: #34d399; font-weight: 700; }
-      .markdown-content code { background-color: #1e293b; padding: 0.2rem 0.4rem; rounded: 0.25rem; font-family: monospace; color: #34d399; }
+      .markdown-content h1 { font-weight: 900; font-size: 2.25rem; margin-bottom: 1.5rem; color: white; letter-spacing: -0.05em; font-style: italic; }
+      .markdown-content h2 { font-weight: 800; font-size: 1.875rem; margin-top: 2.5rem; margin-bottom: 1.25rem; color: white; }
+      .markdown-content h3 { font-weight: 700; font-size: 1.5rem; margin-top: 2rem; margin-bottom: 1rem; color: #34d399; }
+      .markdown-content p { margin-bottom: 1.5rem; line-height: 1.8; color: #cbd5e1; font-size: 1rem; }
+      .markdown-content ul { list-style-type: disc; margin-left: 1.5rem; margin-bottom: 1.5rem; }
+      .markdown-content li { margin-bottom: 0.75rem; color: #cbd5e1; }
+      .markdown-content strong { color: #34d399; font-weight: 800; }
+      
+      /* Code Blocks with Copy Button */
+      .markdown-content pre { 
+        background-color: #020617; 
+        padding: 1.5rem; 
+        border-radius: 1.5rem; 
+        margin-bottom: 1.5rem; 
+        position: relative; 
+        border: 1px solid rgba(255,255,255,0.05);
+        overflow-x: auto;
+      }
+      .markdown-content code { 
+        font-family: 'JetBrains Mono', monospace; 
+        font-size: 0.875rem;
+        color: #10b981;
+      }
+      .copy-button {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        padding: 0.5rem 0.75rem;
+        background: rgba(255,255,255,0.05);
+        color: #94a3b8;
+        border-radius: 0.75rem;
+        font-size: 10px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid rgba(255,255,255,0.1);
+        z-index: 10;
+      }
+      .copy-button:hover {
+        background: #10b981;
+        color: #020617;
+        border-color: #10b981;
+      }
+      .copy-button.copied {
+        background: #34d399;
+        color: #020617;
+      }
     </style>
   <script type="importmap">
 {

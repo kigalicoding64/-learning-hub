@@ -3,7 +3,7 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { marked } from 'marked';
 import { Lesson, Quiz } from '../types';
 import { generateQuiz, summarizeContent, generateTTS } from '../services/geminiService';
-import { BrainCircuitIcon, ClipboardListIcon, LoaderIcon, SparklesIcon, SpeakerIcon, PlayIcon, CheckCircleIcon, VideoIcon, AwardIcon } from './Icons';
+import { BrainCircuitIcon, ClipboardListIcon, LoaderIcon, SparklesIcon, SpeakerIcon, PlayIcon, CheckCircleIcon, VideoIcon, AwardIcon, XIcon } from './Icons';
 import ChatInterface from './ChatInterface';
 import QuizModal from './QuizModal';
 
@@ -152,6 +152,8 @@ const LessonContent: React.FC<LessonContentProps> = ({ lesson, courseTitle, isLe
   const [loadingAction, setLoadingAction] = useState<string | null>(null);
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [markdownHtml, setMarkdownHtml] = useState('');
+  const [showCelebration, setShowCelebration] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const parseContent = async () => {
@@ -165,6 +167,30 @@ const LessonContent: React.FC<LessonContentProps> = ({ lesson, courseTitle, isLe
     };
     parseContent();
   }, [lesson.content]);
+
+  useEffect(() => {
+    if (contentRef.current && markdownHtml) {
+        const preBlocks = contentRef.current.querySelectorAll('pre');
+        preBlocks.forEach((pre) => {
+            if (pre.querySelector('.copy-button')) return;
+
+            const button = document.createElement('button');
+            button.innerText = 'Copy Protocol';
+            button.className = 'copy-button';
+            button.addEventListener('click', () => {
+                const code = pre.querySelector('code')?.innerText || '';
+                navigator.clipboard.writeText(code);
+                button.innerText = 'Copied';
+                button.classList.add('copied');
+                setTimeout(() => {
+                    button.innerText = 'Copy Protocol';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+            pre.appendChild(button);
+        });
+    }
+  }, [markdownHtml]);
 
   const handleSummarize = async () => {
     setLoadingAction('summary');
@@ -190,10 +216,47 @@ const LessonContent: React.FC<LessonContentProps> = ({ lesson, courseTitle, isLe
 
   const onQuizSuccess = () => {
       onMarkComplete();
+      setShowCelebration(true);
+      setTimeout(() => setShowCelebration(false), 5000);
+  };
+
+  const triggerCompletion = () => {
+    onMarkComplete();
+    if (!isLessonComplete) {
+        setShowCelebration(true);
+        setTimeout(() => setShowCelebration(false), 5000);
+    }
   };
 
   return (
-    <div className="space-y-12 animate-slide-in-up max-w-5xl mx-auto pb-24">
+    <div className="space-y-12 animate-slide-in-up max-w-5xl mx-auto pb-24 relative">
+      {/* Celebratory Animation Overlay */}
+      {showCelebration && (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center pointer-events-none animate-fade-in">
+            <div className="bg-brand-blue/90 backdrop-blur-xl p-16 rounded-[4rem] flex flex-col items-center gap-8 shadow-[0_0_100px_rgba(16,185,129,0.6)] border border-white/20 scale-110 animate-slide-up">
+                <div className="w-32 h-32 bg-white rounded-full flex items-center justify-center text-brand-blue shadow-2xl animate-bounce">
+                    <CheckCircleIcon className="w-20 h-20" />
+                </div>
+                <div className="text-center">
+                    <h3 className="text-4xl font-black text-brand-darker uppercase italic tracking-tighter">Module Validated</h3>
+                    <p className="text-brand-darker/70 font-black uppercase tracking-widest text-xs mt-2">Engineering Protocol Sustained</p>
+                </div>
+            </div>
+            {/* Visual Confetti Bits */}
+            {[...Array(20)].map((_, i) => (
+                <div 
+                    key={i} 
+                    className="absolute w-3 h-3 bg-brand-light-blue rounded-full animate-ping opacity-60"
+                    style={{
+                        top: `${Math.random() * 100}%`,
+                        left: `${Math.random() * 100}%`,
+                        animationDelay: `${Math.random() * 2}s`
+                    }}
+                />
+            ))}
+        </div>
+      )}
+
       <div className="bg-slate-900 border border-slate-800 rounded-[3rem] overflow-hidden shadow-2xl ring-1 ring-white/5">
         <div className="p-8 lg:p-16">
             <div className="flex flex-col md:flex-row md:items-start justify-between gap-8 mb-16">
@@ -251,6 +314,7 @@ const LessonContent: React.FC<LessonContentProps> = ({ lesson, courseTitle, isLe
             <div className="grid lg:grid-cols-12 gap-20">
                 <div className="lg:col-span-8">
                     <div 
+                        ref={contentRef}
                         className="markdown-content prose prose-invert prose-emerald max-w-none text-slate-300 leading-relaxed"
                         dangerouslySetInnerHTML={{ __html: markdownHtml }}
                     />
@@ -258,10 +322,10 @@ const LessonContent: React.FC<LessonContentProps> = ({ lesson, courseTitle, isLe
                     {!isLessonComplete && (
                          <div className="mt-20 pt-10 border-t border-white/5">
                             <button 
-                                onClick={onMarkComplete}
-                                className="px-8 py-4 bg-white/5 hover:bg-white/10 text-white font-black text-xs uppercase tracking-[0.3em] rounded-2xl border border-white/10 transition-all flex items-center gap-4"
+                                onClick={triggerCompletion}
+                                className="px-8 py-4 bg-white/5 hover:bg-white/10 text-white font-black text-xs uppercase tracking-[0.3em] rounded-2xl border border-white/10 transition-all flex items-center gap-4 group"
                             >
-                                <CheckCircleIcon className="w-5 h-5 text-brand-blue" />
+                                <CheckCircleIcon className="w-5 h-5 text-brand-blue group-hover:scale-110 transition-transform" />
                                 Mark Module as Complete
                             </button>
                          </div>
